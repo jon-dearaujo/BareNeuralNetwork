@@ -5,17 +5,24 @@ class Matrix:
     if inner is None:
       self.rows = rows
       self.cols = cols
-      self.matrix = []
+      self.data = []
 
-      self.matrix = [[0.0 for y in range(self.cols)] 
+      self.data = [[0.0 for y in range(self.cols)] 
       for x in range(self.rows)]
     else:
       self.rows = len(inner)
       self.cols = len(inner[0])
-      self.matrix = inner
+      self.data = inner
+
+  @staticmethod
+  def fromList(lst):
+    return Matrix([[val] for val in lst])
+
+  def toList(self):
+    return [row[0] for row in self.data]
 
   def randomize(self):
-    self.matrix = [[random.uniform(0, 100) for y in range(self.cols)] 
+    self.data = [[random.uniform(-1, 1) for y in range(self.cols)] 
     for x in range(self.rows)]
   
   def __scalar_multiply(self, scalar):
@@ -25,31 +32,30 @@ class Matrix:
     self.__perform_for_each(lambda x: x + val)
   
   def add(self, other):
-    if type(other) is list:
-      if not (len(self.matrix) == len(other) \
-        and len(self.matrix[0]) == len(other[0])):
+    if isinstance(other, Matrix):
+      if not (len(self.data) == len(other.data) \
+        and len(self.data[0]) == len(other.data[0])):
         raise Exception('Invalid matrix dimensions')
 
-      self.__perform_for_each_with_indexes(lambda val, row, col: val + other[row][col])
+      self.__perform_for_each_with_indexes(lambda val, row, col: val + other.data[row][col])
     else:
       self.__scalar_add(other)
 
   def multiply(self, other):
-    print(type(other))
     if isinstance(other, Matrix):
       '''Matrix product'''
-      if not (len(self.matrix[0]) == len(other.matrix)):
+      if not (len(self.data[0]) == len(other.data)):
         raise Exception('Matrix A\'s column size must match Matrix B\'s row size')
       
-      result_row = len(self.matrix)
-      result_col = len(other.matrix[0])
+      result_row = len(self.data)
+      result_col = len(other.data[0])
       result = self.__gen_new_zeroed_inner(result_row, result_col)
 
       for i in range(result_row):
         for j in range(result_col):
           total = 0.0
-          for move in range(len(other.matrix)):
-            total += self.matrix[i][move] * other.matrix[move][j]
+          for move in range(len(other.data)):
+            total += self.data[i][move] * other.data[move][j]
           result[i][j] = total
       return Matrix(result)
 
@@ -65,8 +71,11 @@ class Matrix:
     result = self.__gen_new_zeroed_inner(self.cols, self.rows)
     for i in range(self.rows):
       for j in range(self.cols):
-        result[j][i] = self.matrix[i][j]
-    self.matrix = result
+        result[j][i] = self.data[i][j]
+    return Matrix(result)
+
+  def map(self, function):
+    self.data = [[function(value) for value in row] for row in self.data]
 
   def __dot_product(self, vector_a, vector_b):
     sum = 0.0
@@ -75,17 +84,17 @@ class Matrix:
     return sum
 
   def __perform_for_each_with_indexes(self, func):
-    self.matrix = [[func(val, row, col) for col, val in enumerate(self.matrix[row])] 
-      for row in range(len(self.matrix))]
+    self.data = [[func(val, row, col) for col, val in enumerate(self.data[row])] 
+      for row in range(len(self.data))]
 
   def __perform_for_each(self, func):
-    self.matrix = [
+    self.data = [
       [func(val) for val in row] 
-      for row in self.matrix]
+      for row in self.data]
 
   def __gen_new_zeroed_inner(self, rows, cols):
     return [[0.0 for y in range(cols)] for x in range(rows)]
 
   def __repr__(self):
-    return self.matrix.__repr__()
+    return self.data.__repr__()
 #End Matrix
