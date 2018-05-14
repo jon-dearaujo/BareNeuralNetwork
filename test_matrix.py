@@ -43,20 +43,28 @@ class TestMatrix(unittest.TestCase):
     self.matrix.add(other_matrix)
     self.assertEqual(self.matrix.data, expected_matrix)
 
-  def test_multiply_only_accepts_col_number_matching_row_number(self):
+  def test_product_only_accepts_col_number_matching_row_number(self):
     other = Matrix([[2.0,2.0,2.0], [2.0,2.0,2.0]])
 
     with self.assertRaises(Exception) as error:
-      self.matrix.multiply(other)
+      Matrix.product(self.matrix, other)
     self.assertEqual('Matrix A\'s column size must match Matrix B\'s row size', \
       str(error.exception))
 
-  def test_multiply_must_work(self):
+  def test_product_must_work(self):
     other = Matrix([[2.0,5.0], [2.0,2.0], [4.0, 2.0]])
     expected = [[8.0, 9.0], [8.0, 9.0]]
 
-    new_matrix = self.matrix.multiply(other)
+    new_matrix = Matrix.product(self.matrix, other)
     self.assertEqual(new_matrix.data, expected)
+
+  def test_multiply_must_work(self):
+    other = Matrix([[2.0, 5.0, 10.0], [3.0, 1.0, 7.0]])
+    expected = [[2.0, 5.0, 10.0], [3.0, 1.0, 7.0]]
+
+    self.matrix.multiply(other)
+
+    self.assertEqual(expected, self.matrix.data)
   
   def test_randomize_should_generate_new_values(self):
     original = self.matrix.data
@@ -69,12 +77,19 @@ class TestMatrix(unittest.TestCase):
     original = Matrix([[2.0,5.0], [2.0,2.0], [4.0, 2.0]])
     expected_new = [[2.0,2.0, 4.0], [5.0, 2.0, 2.0]]
 
-    new = original.transpose()
+    new = Matrix.transpose(original)
     self.assertEqual(new.data, expected_new)
 
   def test_map_should_be_applied_to_all_elements(self):
     self.matrix.map(lambda x: 100.0)
     self.assertTrue([[self.assertEqual(100.0, val) for val in row] for row in self.matrix.data])
+
+  def test_subtract_works(self):
+    a = Matrix([[5, 15], [6, 10]])
+    b = Matrix([[2, 5], [3, 1]])
+    expected = Matrix([[3, 10], [3, 9]])
+
+    self.assertEqual(Matrix.subtract(a, b).data, expected.data)
 
 if __name__ == '__main__':
   unittest.main()
