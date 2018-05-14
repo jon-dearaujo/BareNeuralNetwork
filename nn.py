@@ -8,7 +8,6 @@ class NeuralNetwork():
     self.number_hiddens = number_hiddens
     self.number_outputs = number_outputs
 
-    # nn = NeuralNetwork(2, 2, 1) inputs, hiddens, outsputs
     self.weights_ih = Matrix(rows=self.number_hiddens, cols=self.number_inputs)
     self.weights_ho = Matrix(rows=self.number_outputs, cols=self.number_hiddens)
 
@@ -17,7 +16,7 @@ class NeuralNetwork():
     self.bias_o = Matrix(rows=self.number_outputs, cols=1)
     self.bias_o.map(lambda x: 1.0)
 
-    self.learning_rate = 1
+    self.learning_rate = 0.1
 
     # initialize the Weights with random values
     self.weights_ih.randomize()
