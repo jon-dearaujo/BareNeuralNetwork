@@ -1,8 +1,8 @@
 '''
   Some ludicrously stupid ways of use nn.NeuralNetwork. :D
 
-  Using a 2x1 output to solve simple binary op. Yeah it could be done with 1x1, but you know.
-  LUDICROUSLY STUPID is the word here
+  Using a 2x1 output to solve simple Boolean op.
+  Yeah, it could be done with 1x1, but you know... LUDICROUSLY STUPID is the word here
 '''
 
 from nn import NeuralNetwork
